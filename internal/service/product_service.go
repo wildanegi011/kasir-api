@@ -1,16 +1,16 @@
 package service
 
 import (
-	"kasir-api/internal/model"
+	"kasir-api/internal/domain"
 	"kasir-api/internal/repository"
 	"kasir-api/internal/utils"
 )
 
 type ProductService interface {
-	GetProducts() ([]model.Product, error)
-	GetProductByID(id int) (*model.Product, error)
-	CreateProduct(product *model.Product) (*model.Product, error)
-	UpdateProduct(id int, product *model.Product) (*model.Product, error)
+	GetProducts() ([]domain.Product, error)
+	GetProductByID(id int) (*domain.Product, error)
+	CreateProduct(product *domain.Product) (*domain.Product, error)
+	UpdateProduct(id int, product *domain.Product) (*domain.Product, error)
 	DeleteProduct(id int) error
 }
 
@@ -22,19 +22,19 @@ func NewProductService(productRepository repository.ProductRepository) ProductSe
 	return &ProductServiceImpl{productRepository: productRepository}
 }
 
-func (s *ProductServiceImpl) GetProducts() ([]model.Product, error) {
+func (s *ProductServiceImpl) GetProducts() ([]domain.Product, error) {
 	return s.productRepository.GetProducts()
 }
 
-func (s *ProductServiceImpl) GetProductByID(id int) (*model.Product, error) {
+func (s *ProductServiceImpl) GetProductByID(id int) (*domain.Product, error) {
 	return s.productRepository.GetProductByID(id)
 }
 
-func (s *ProductServiceImpl) CreateProduct(product *model.Product) (*model.Product, error) {
+func (s *ProductServiceImpl) CreateProduct(product *domain.Product) (*domain.Product, error) {
 	return s.productRepository.CreateProduct(product)
 }
 
-func (s *ProductServiceImpl) UpdateProduct(id int, product *model.Product) (*model.Product, error) {
+func (s *ProductServiceImpl) UpdateProduct(id int, product *domain.Product) (*domain.Product, error) {
 	_, err := s.productRepository.GetProductByID(id)
 	if err != nil {
 		return nil, utils.ErrProductNotFound

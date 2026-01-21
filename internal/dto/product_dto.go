@@ -1,6 +1,6 @@
 package dto
 
-import "kasir-api/internal/model"
+import "kasir-api/internal/domain"
 
 type ProductRequest struct {
 	Name  string `json:"name"`
@@ -8,8 +8,8 @@ type ProductRequest struct {
 	Stock int    `json:"stock"`
 }
 
-func ProductReqToDomain(req *ProductRequest) *model.Product {
-	return &model.Product{
+func ProductReqToDomain(req *ProductRequest) *domain.Product {
+	return &domain.Product{
 		Name:  req.Name,
 		Price: req.Price,
 		Stock: req.Stock,

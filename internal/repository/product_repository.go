@@ -2,14 +2,14 @@ package repository
 
 import (
 	"database/sql"
-	"kasir-api/internal/model"
+	"kasir-api/internal/domain"
 )
 
 type ProductRepository interface {
-	GetProducts() ([]model.Product, error)
-	GetProductByID(id int) (*model.Product, error)
-	CreateProduct(product *model.Product) (*model.Product, error)
-	UpdateProduct(id int, product *model.Product) (*model.Product, error)
+	GetProducts() ([]domain.Product, error)
+	GetProductByID(id int) (*domain.Product, error)
+	CreateProduct(product *domain.Product) (*domain.Product, error)
+	UpdateProduct(id int, product *domain.Product) (*domain.Product, error)
 	DeleteProduct(id int) error
 }
 
@@ -21,16 +21,16 @@ func NewProductRepositoryImpl(db *sql.DB) ProductRepository {
 	return &ProductRepositoryImpl{db: db}
 }
 
-func (p *ProductRepositoryImpl) GetProducts() ([]model.Product, error) {
+func (p *ProductRepositoryImpl) GetProducts() ([]domain.Product, error) {
 	rows, err := p.db.Query("SELECT * FROM products")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var products []model.Product
+	var products []domain.Product
 	for rows.Next() {
-		var product model.Product
+		var product domain.Product
 		if err := rows.Scan(&product.ID, &product.Name, &product.Price, &product.Stock); err != nil {
 			return nil, err
 		}
@@ -39,16 +39,16 @@ func (p *ProductRepositoryImpl) GetProducts() ([]model.Product, error) {
 	return products, nil
 }
 
-func (p *ProductRepositoryImpl) GetProductByID(id int) (*model.Product, error) {
+func (p *ProductRepositoryImpl) GetProductByID(id int) (*domain.Product, error) {
 	row := p.db.QueryRow("SELECT * from products WHERE id = ?", id)
-	var product model.Product
+	var product domain.Product
 	if err := row.Scan(&product.ID, &product.Name, &product.Price, &product.Stock); err != nil {
 		return nil, err
 	}
 	return &product, nil
 }
 
-func (p *ProductRepositoryImpl) CreateProduct(product *model.Product) (*model.Product, error) {
+func (p *ProductRepositoryImpl) CreateProduct(product *domain.Product) (*domain.Product, error) {
 	result, err := p.db.Exec("INSERT INTO products (name, price, stock) VALUES (?, ?, ?)",
 		product.Name, product.Price, product.Stock)
 	if err != nil {
@@ -66,7 +66,7 @@ func (p *ProductRepositoryImpl) CreateProduct(product *model.Product) (*model.Pr
 	return product, nil
 }
 
-func (p *ProductRepositoryImpl) UpdateProduct(id int, product *model.Product) (*model.Product, error) {
+func (p *ProductRepositoryImpl) UpdateProduct(id int, product *domain.Product) (*domain.Product, error) {
 	_, err := p.db.Exec("UPDATE products SET name = ?, price = ?, stock = ? WHERE id = ?",
 		product.Name, product.Price, product.Stock, id)
 	if err != nil {
