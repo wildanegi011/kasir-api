@@ -32,7 +32,7 @@
                 }
             },
             "post": {
-                "description": "Menambahkan produk baru",
+                "description": "Membuat produk baru",
                 "consumes": [
                     "application/json"
                 ],
@@ -42,7 +42,7 @@
                 "tags": [
                     "products"
                 ],
-                "summary": "Create new product",
+                "summary": "Create a new product",
                 "parameters": [
                     {
                         "description": "Product Data",
@@ -50,7 +50,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.Product"
+                            "$ref": "#/definitions/dto.ProductRequest"
                         }
                     }
                 ],
@@ -60,6 +60,15 @@
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -132,7 +141,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.Product"
+                            "$ref": "#/definitions/dto.ProductRequest"
                         }
                     }
                 ],
@@ -180,12 +189,9 @@
         }
     },
     "definitions": {
-        "main.Product": {
+        "dto.ProductRequest": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
                 "name": {
                     "type": "string"
                 },

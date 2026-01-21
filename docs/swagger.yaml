@@ -1,9 +1,7 @@
 basePath: /
 definitions:
-  main.Product:
+  dto.ProductRequest:
     properties:
-      id:
-        type: integer
       name:
         type: string
       price:
@@ -36,14 +34,14 @@ paths:
     post:
       consumes:
       - application/json
-      description: Menambahkan produk baru
+      description: Membuat produk baru
       parameters:
       - description: Product Data
         in: body
         name: product
         required: true
         schema:
-          $ref: '#/definitions/main.Product'
+          $ref: '#/definitions/dto.ProductRequest'
       produces:
       - application/json
       responses:
@@ -52,7 +50,13 @@ paths:
           schema:
             additionalProperties: true
             type: object
-      summary: Create new product
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new product
       tags:
       - products
   /api/products/{id}:
@@ -119,7 +123,7 @@ paths:
         name: product
         required: true
         schema:
-          $ref: '#/definitions/main.Product'
+          $ref: '#/definitions/dto.ProductRequest'
       produces:
       - application/json
       responses:

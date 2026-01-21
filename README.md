@@ -24,9 +24,28 @@ Download http-swagger:
 go get -u github.com/swaggo/http-swagger
 ```
 
+## instalasi sqlite
+```bash
+go get github.com/mattn/go-sqlite3
+```
+
+jika terjadi error, coba jalankan
+```bash
+go env CGO_ENABLED
+```
+
 ## Cara menjalankan
 ```bash
-go run main.go
+go run cmd/server/main.go
+```
+
+buka browser dan akses
+```bash
+http://localhost:8080
+```
+buka url ini untuk swagger
+```bash
+http://localhost:8080/swagger/index.html
 ```
 
 ## Endpoint API

@@ -39,7 +39,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Menambahkan produk baru",
+                "description": "Membuat produk baru",
                 "consumes": [
                     "application/json"
                 ],
@@ -49,7 +49,7 @@ const docTemplate = `{
                 "tags": [
                     "products"
                 ],
-                "summary": "Create new product",
+                "summary": "Create a new product",
                 "parameters": [
                     {
                         "description": "Product Data",
@@ -57,7 +57,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.Product"
+                            "$ref": "#/definitions/dto.ProductRequest"
                         }
                     }
                 ],
@@ -67,6 +67,15 @@ const docTemplate = `{
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -139,7 +148,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.Product"
+                            "$ref": "#/definitions/dto.ProductRequest"
                         }
                     }
                 ],
@@ -187,12 +196,9 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "main.Product": {
+        "dto.ProductRequest": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
                 "name": {
                     "type": "string"
                 },
