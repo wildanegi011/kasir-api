@@ -18,11 +18,17 @@ func InitDB() (*sql.DB, error) {
 
 	createTable := `
 		CREATE TABLE IF NOT EXISTS products (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT NOT NULL,
-		price INTEGER NOT NULL,
-		stock INTEGER NOT NULL
-	);
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			name TEXT NOT NULL,
+			price INTEGER NOT NULL,
+			stock INTEGER NOT NULL
+		);
+
+		CREATE TABLE IF NOT EXISTS categories (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			name VARCHAR(100) NOT NULL,
+			description TEXT NULL
+		);
 	`
 
 	_, err = DB.Exec(createTable)

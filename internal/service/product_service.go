@@ -43,5 +43,9 @@ func (s *ProductServiceImpl) UpdateProduct(id int, product *domain.Product) (*do
 }
 
 func (s *ProductServiceImpl) DeleteProduct(id int) error {
+	_, err := s.productRepository.GetProductByID(id)
+	if err != nil {
+		return utils.ErrProductNotFound
+	}
 	return s.productRepository.DeleteProduct(id)
 }

@@ -24,7 +24,8 @@ func main() {
 
 	db, _ := config.InitDB()
 
-	productRepository := repository.NewProductRepositoryImpl(db)
+	// =================== Product ===================================
+	productRepository := repository.NewProductRepository(db)
 	productService := service.NewProductService(productRepository)
 	productHandler := handler.NewProductHandler(productService)
 
@@ -33,7 +34,21 @@ func main() {
 	http.HandleFunc("POST /api/products", productHandler.CreateProduct)
 	http.HandleFunc("PUT /api/products/", productHandler.UpdateProduct)
 	http.HandleFunc("DELETE /api/products/", productHandler.DeleteProduct)
+	// =================================================================
 
+	// =================== Category ===================================
+	categoryRepository := repository.NewCategoryRepository(db)
+	categoryService := service.NewCategoryService(categoryRepository)
+	categoryHandler := handler.NewCategoryHandler(categoryService)
+
+	http.HandleFunc("GET /api/categories", categoryHandler.GetCategories)
+	http.HandleFunc("GET /api/categories/", categoryHandler.GetCategoryByID)
+	http.HandleFunc("POST /api/categories", categoryHandler.CreateCategory)
+	http.HandleFunc("PUT /api/categories/", categoryHandler.UpdateCategory)
+	http.HandleFunc("DELETE /api/categories/", categoryHandler.DeleteCategory)
+	// =================================================================
+
+	// =================== Health ===================================
 	http.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)

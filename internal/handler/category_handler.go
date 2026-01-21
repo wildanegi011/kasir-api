@@ -11,54 +11,54 @@ import (
 	"strings"
 )
 
-type ProductHandler struct {
-	productService service.ProductService
+type CategoryHandler struct {
+	categoryService service.CategoryService
 }
 
-func NewProductHandler(productService service.ProductService) *ProductHandler {
-	return &ProductHandler{productService: productService}
+func NewCategoryHandler(categoryService service.CategoryService) *CategoryHandler {
+	return &CategoryHandler{categoryService: categoryService}
 }
 
-// GetAllProducts godoc
-// @Summary Get all products
-// @Description Mengambil semua data produk
-// @Tags products
+// GetAllCategories godoc
+// @Summary Get all categories
+// @Description Mengambil semua data kategori
+// @Tags categories
 // @Accept json
 // @Produce json
 // @Success 200 {object} map[string]interface{}
-// @Router /api/products [get]
-func (h *ProductHandler) GetProducts(w http.ResponseWriter, r *http.Request) {
+// @Router /api/categories [get]
+func (h *CategoryHandler) GetCategories(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	products, err := h.productService.GetProducts()
+	categories, err := h.categoryService.GetCategories()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(utils.Response{
 			Status:  false,
-			Message: "failed to get products",
+			Message: "failed to get categories",
 		})
 		return
 	}
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(utils.Response{
 		Status:  true,
-		Message: "successfully get products",
-		Data:    products,
+		Message: "successfully get categories",
+		Data:    categories,
 	})
 }
 
-// GetProductByID godoc
-// @Summary Get product by ID
-// @Description Mengambil produk berdasarkan ID
-// @Tags products
+// GetCategoryByID godoc
+// @Summary Get category by ID
+// @Description Mengambil kategori berdasarkan ID
+// @Tags categories
 // @Accept json
 // @Produce json
-// @Param id path int true "Product ID"
+// @Param id path int true "Category ID"
 // @Success 200 {object} map[string]interface{}
 // @Failure 404 {object} map[string]string
-// @Router /api/products/{id} [get]
-func (h *ProductHandler) GetProductByID(w http.ResponseWriter, r *http.Request) {
+// @Router /api/categories/{id} [get]
+func (h *CategoryHandler) GetCategoryByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	id := strings.TrimPrefix(r.URL.Path, "/api/products/")
+	id := strings.TrimPrefix(r.URL.Path, "/api/categories/")
 	idInt, err := strconv.Atoi(id)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -68,12 +68,12 @@ func (h *ProductHandler) GetProductByID(w http.ResponseWriter, r *http.Request) 
 		})
 		return
 	}
-	product, err := h.productService.GetProductByID(idInt)
+	category, err := h.categoryService.GetCategoryByID(idInt)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(utils.Response{
 			Status:  false,
-			Message: "failed to get product",
+			Message: "failed to get category",
 		})
 		return
 	}
@@ -81,25 +81,25 @@ func (h *ProductHandler) GetProductByID(w http.ResponseWriter, r *http.Request) 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(utils.Response{
 		Status:  true,
-		Message: "successfully get product",
-		Data:    product,
+		Message: "successfully get category",
+		Data:    category,
 	})
 }
 
-// CreateProduct godoc
-// @Summary Create a new product
-// @Description Membuat produk baru
-// @Tags products
+// CreateCategory godoc
+// @Summary Create a new category
+// @Description Membuat kategori baru
+// @Tags categories
 // @Accept json
 // @Produce json
-// @Param product body dto.ProductRequest true "Product Data"
+// @Param category body dto.CategoryRequest true "Category Data"
 // @Success 201 {object} map[string]interface{}
 // @Failure 400 {object} map[string]string
-// @Router /api/products [post]
-func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
+// @Router /api/categories [post]
+func (h *CategoryHandler) CreateCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	var req dto.ProductRequest
+	var req dto.CategoryRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(utils.Response{
@@ -109,22 +109,22 @@ func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.Name == "" || req.Price <= 0 || req.Stock < 0 {
+	if req.Name == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(utils.Response{
 			Status:  false,
-			Message: "Name, price (must be > 0), and stock (must be >= 0) are required",
+			Message: "Name required",
 		})
 		return
 	}
 
-	product := dto.ProductReqToDomain(&req)
+	category := dto.CategoryReqToDomain(&req)
 
-	if _, err := h.productService.CreateProduct(product); err != nil {
+	if _, err := h.categoryService.CreateCategory(category); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(utils.Response{
 			Status:  false,
-			Message: "Failed to create product",
+			Message: "Failed to create category",
 		})
 		return
 	}
@@ -132,27 +132,27 @@ func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(utils.Response{
 		Status:  true,
-		Message: "Product created successfully",
-		Data:    product,
+		Message: "Category created successfully",
+		Data:    category,
 	})
 }
 
-// UpdateProduct godoc
-// @Summary Update product
-// @Description Update produk berdasarkan ID
-// @Tags products
+// UpdateCategory godoc
+// @Summary Update category
+// @Description Update kategori berdasarkan ID
+// @Tags categories
 // @Accept json
 // @Produce json
-// @Param id path int true "Product ID"
-// @Param product body dto.ProductRequest true "Product Data"
+// @Param id path int true "Category ID"
+// @Param category body dto.CategoryRequest true "Category Data"
 // @Success 200 {object} map[string]interface{}
-// @Router /api/products/{id} [put]
-func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
+// @Router /api/categories/{id} [put]
+func (h *CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	id := strings.TrimPrefix(r.URL.Path, "/api/products/")
+	id := strings.TrimPrefix(r.URL.Path, "/api/categories/")
 	idInt, _ := strconv.Atoi(id)
 
-	var req dto.ProductRequest
+	var req dto.CategoryRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(utils.Response{
@@ -162,57 +162,57 @@ func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.Name == "" || req.Price <= 0 || req.Stock < 0 {
+	if req.Name == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(utils.Response{
 			Status:  false,
-			Message: "Name, price (must be > 0), and stock (must be >= 0) are required",
+			Message: "Name required",
 		})
 		return
 	}
 
-	product := dto.ProductReqToDomain(&req)
-	updatedProduct, err := h.productService.UpdateProduct(idInt, product)
+	category := dto.CategoryReqToDomain(&req)
+	updatedCategory, err := h.categoryService.UpdateCategory(idInt, category)
 	if err != nil {
-		if errors.Is(err, utils.ErrProductNotFound) {
+		if errors.Is(err, utils.ErrCategoryNotFound) {
 			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(utils.Response{
 				Status:  false,
-				Message: utils.ErrProductNotFound.Error(),
+				Message: utils.ErrCategoryNotFound.Error(),
 			})
 			return
 		}
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(utils.Response{
 			Status:  false,
-			Message: "Failed to update product",
+			Message: "Failed to update category",
 		})
 		return
 	}
 
-	updatedProduct.ID = idInt
+	updatedCategory.ID = idInt
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(utils.Response{
 		Status:  true,
-		Message: "Product updated successfully",
-		Data:    updatedProduct,
+		Message: "Category updated successfully",
+		Data:    updatedCategory,
 	})
 }
 
-// DeleteProduct godoc
-// @Summary Delete product
-// @Description Menghapus produk berdasarkan ID
-// @Tags products
+// DeleteCategory godoc
+// @Summary Delete category
+// @Description Menghapus kategori berdasarkan ID
+// @Tags categories
 // @Accept json
 // @Produce json
-// @Param id path int true "Product ID"
+// @Param id path int true "Category ID"
 // @Success 200 {object} map[string]interface{}
-// @Router /api/products/{id} [delete]
-func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
+// @Router /api/categories/{id} [delete]
+func (h *CategoryHandler) DeleteCategory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	id := strings.TrimPrefix(r.URL.Path, "/api/products/")
+	id := strings.TrimPrefix(r.URL.Path, "/api/categories/")
 	idInt, err := strconv.Atoi(id)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -222,19 +222,19 @@ func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	if err := h.productService.DeleteProduct(idInt); err != nil {
-		if errors.Is(err, utils.ErrProductNotFound) {
+	if err := h.categoryService.DeleteCategory(idInt); err != nil {
+		if errors.Is(err, utils.ErrCategoryNotFound) {
 			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(utils.Response{
 				Status:  false,
-				Message: utils.ErrProductNotFound.Error(),
+				Message: utils.ErrCategoryNotFound.Error(),
 			})
 			return
 		}
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(utils.Response{
 			Status:  false,
-			Message: "failed to delete product",
+			Message: "failed to delete category",
 		})
 		return
 	}
@@ -242,6 +242,6 @@ func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(utils.Response{
 		Status:  true,
-		Message: "successfully delete product",
+		Message: "successfully delete category",
 	})
 }

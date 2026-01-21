@@ -1,6 +1,13 @@
 basePath: /
 definitions:
-  dto.ProductRequest:
+  kasir-api_internal_dto.CategoryRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  kasir-api_internal_dto.ProductRequest:
     properties:
       name:
         type: string
@@ -15,6 +22,126 @@ info:
   title: Kasir API
   version: "1.0"
 paths:
+  /api/categories:
+    get:
+      consumes:
+      - application/json
+      description: Mengambil semua data kategori
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all categories
+      tags:
+      - categories
+    post:
+      consumes:
+      - application/json
+      description: Membuat kategori baru
+      parameters:
+      - description: Category Data
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/kasir-api_internal_dto.CategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new category
+      tags:
+      - categories
+  /api/categories/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Menghapus kategori berdasarkan ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete category
+      tags:
+      - categories
+    get:
+      consumes:
+      - application/json
+      description: Mengambil kategori berdasarkan ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get category by ID
+      tags:
+      - categories
+    put:
+      consumes:
+      - application/json
+      description: Update kategori berdasarkan ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Category Data
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/kasir-api_internal_dto.CategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update category
+      tags:
+      - categories
   /api/products:
     get:
       consumes:
@@ -41,7 +168,7 @@ paths:
         name: product
         required: true
         schema:
-          $ref: '#/definitions/dto.ProductRequest'
+          $ref: '#/definitions/kasir-api_internal_dto.ProductRequest'
       produces:
       - application/json
       responses:
@@ -123,7 +250,7 @@ paths:
         name: product
         required: true
         schema:
-          $ref: '#/definitions/dto.ProductRequest'
+          $ref: '#/definitions/kasir-api_internal_dto.ProductRequest'
       produces:
       - application/json
       responses:
