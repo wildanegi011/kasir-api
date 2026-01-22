@@ -18,8 +18,9 @@ import (
 
 // @title Kasir API
 // @version 1.0
-// @host localhost:8080
+// @host https://kasir-api-chi.vercel.app
 // @BasePath /
+
 func main() {
 
 	db, _ := config.InitDB()

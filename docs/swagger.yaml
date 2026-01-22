@@ -1,13 +1,13 @@
 basePath: /
 definitions:
-  kasir-api_internal_dto.CategoryRequest:
+  kasir-api_pkg_dto.CategoryRequest:
     properties:
       description:
         type: string
       name:
         type: string
     type: object
-  kasir-api_internal_dto.ProductRequest:
+  kasir-api_pkg_dto.ProductRequest:
     properties:
       name:
         type: string
@@ -16,7 +16,7 @@ definitions:
       stock:
         type: integer
     type: object
-host: localhost:8080
+host: https://kasir-api-chi.vercel.app
 info:
   contact: {}
   title: Kasir API
@@ -48,7 +48,7 @@ paths:
         name: category
         required: true
         schema:
-          $ref: '#/definitions/kasir-api_internal_dto.CategoryRequest'
+          $ref: '#/definitions/kasir-api_pkg_dto.CategoryRequest'
       produces:
       - application/json
       responses:
@@ -130,7 +130,7 @@ paths:
         name: category
         required: true
         schema:
-          $ref: '#/definitions/kasir-api_internal_dto.CategoryRequest'
+          $ref: '#/definitions/kasir-api_pkg_dto.CategoryRequest'
       produces:
       - application/json
       responses:
@@ -168,7 +168,7 @@ paths:
         name: product
         required: true
         schema:
-          $ref: '#/definitions/kasir-api_internal_dto.ProductRequest'
+          $ref: '#/definitions/kasir-api_pkg_dto.ProductRequest'
       produces:
       - application/json
       responses:
@@ -250,7 +250,7 @@ paths:
         name: product
         required: true
         schema:
-          $ref: '#/definitions/kasir-api_internal_dto.ProductRequest'
+          $ref: '#/definitions/kasir-api_pkg_dto.ProductRequest'
       produces:
       - application/json
       responses:

@@ -20,7 +20,6 @@ var (
 	once sync.Once
 )
 
-// init routes sekali saja (cold start)
 func initApp() {
 	db, _ := config.InitDB()
 

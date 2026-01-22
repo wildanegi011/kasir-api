@@ -5,7 +5,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
+    "host": "https://kasir-api-chi.vercel.app",
     "basePath": "/",
     "paths": {
         "/api/categories": {
@@ -50,7 +50,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/kasir-api_internal_dto.CategoryRequest"
+                            "$ref": "#/definitions/kasir-api_pkg_dto.CategoryRequest"
                         }
                     }
                 ],
@@ -141,7 +141,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/kasir-api_internal_dto.CategoryRequest"
+                            "$ref": "#/definitions/kasir-api_pkg_dto.CategoryRequest"
                         }
                     }
                 ],
@@ -229,7 +229,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/kasir-api_internal_dto.ProductRequest"
+                            "$ref": "#/definitions/kasir-api_pkg_dto.ProductRequest"
                         }
                     }
                 ],
@@ -320,7 +320,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/kasir-api_internal_dto.ProductRequest"
+                            "$ref": "#/definitions/kasir-api_pkg_dto.ProductRequest"
                         }
                     }
                 ],
@@ -368,7 +368,7 @@
         }
     },
     "definitions": {
-        "kasir-api_internal_dto.CategoryRequest": {
+        "kasir-api_pkg_dto.CategoryRequest": {
             "type": "object",
             "properties": {
                 "description": {
@@ -379,7 +379,7 @@
                 }
             }
         },
-        "kasir-api_internal_dto.ProductRequest": {
+        "kasir-api_pkg_dto.ProductRequest": {
             "type": "object",
             "properties": {
                 "name": {
