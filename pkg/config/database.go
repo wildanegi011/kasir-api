@@ -13,10 +13,8 @@ import (
 var DB *sql.DB
 
 func InitDB() (*sql.DB, error) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	_ = godotenv.Load()
+
 	if DB != nil {
 		return DB, nil
 	}
