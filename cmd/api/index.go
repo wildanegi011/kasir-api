@@ -11,6 +11,8 @@ import (
 	"kasir-api/pkg/service"
 	"kasir-api/pkg/utils"
 
+	_ "kasir-api/docs"
+
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
