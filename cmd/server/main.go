@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"kasir-api/internal/config"
-	"kasir-api/internal/handler"
-	"kasir-api/internal/repository"
-	"kasir-api/internal/service"
-	"kasir-api/internal/utils"
+	"kasir-api/pkg/config"
+	"kasir-api/pkg/handler"
+	"kasir-api/pkg/repository"
+	"kasir-api/pkg/service"
+	"kasir-api/pkg/utils"
 
 	_ "kasir-api/docs"
 

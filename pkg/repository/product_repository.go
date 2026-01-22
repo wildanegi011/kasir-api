@@ -2,7 +2,7 @@ package repository
 
 import (
 	"database/sql"
-	"kasir-api/internal/domain"
+	"kasir-api/pkg/domain"
 )
 
 type ProductRepository interface {

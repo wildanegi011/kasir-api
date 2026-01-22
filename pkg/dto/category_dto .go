@@ -1,6 +1,6 @@
 package dto
 
-import "kasir-api/internal/domain"
+import "kasir-api/pkg/domain"
 
 type CategoryRequest struct {
 	Name        string `json:"name"`

@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"sync"
 
-	"kasir-api/internal/config"
-	appHandler "kasir-api/internal/handler"
-	"kasir-api/internal/repository"
-	"kasir-api/internal/service"
-	"kasir-api/internal/utils"
+	"kasir-api/pkg/config"
+	appHandler "kasir-api/pkg/handler"
+	"kasir-api/pkg/repository"
+	"kasir-api/pkg/service"
+	"kasir-api/pkg/utils"
 
 	httpSwagger "github.com/swaggo/http-swagger"
 )

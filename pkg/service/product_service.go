@@ -1,9 +1,9 @@
 package service
 
 import (
-	"kasir-api/internal/domain"
-	"kasir-api/internal/repository"
-	"kasir-api/internal/utils"
+	"kasir-api/pkg/domain"
+	"kasir-api/pkg/repository"
+	"kasir-api/pkg/utils"
 )
 
 type ProductService interface {
