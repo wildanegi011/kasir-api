@@ -18,7 +18,7 @@ import (
 
 // @title Kasir API
 // @version 1.0
-// @host https://kasir-api-chi.vercel.app
+// @host kasir-api-chi.vercel.app/
 // @BasePath /
 
 func main() {
