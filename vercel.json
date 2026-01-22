@@ -1,7 +1,8 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "api/*.go": {
-      "runtime": "go"
+      "runtime": "go1.x"
     }
   }
 }
