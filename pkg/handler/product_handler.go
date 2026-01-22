@@ -124,7 +124,7 @@ func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(utils.Response{
 			Status:  false,
-			Message: "Failed to create product",
+			Message: err.Error(),
 		})
 		return
 	}

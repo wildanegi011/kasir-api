@@ -3,39 +3,42 @@ package config
 import (
 	"database/sql"
 	"log"
+	"os"
+	"time"
 
-	_ "github.com/mattn/go-sqlite3"
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 var DB *sql.DB
 
 func InitDB() (*sql.DB, error) {
-	var err error
-	DB, err = sql.Open("sqlite3", "./products.db")
+	err := godotenv.Load()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error loading .env file")
+	}
+	if DB != nil {
+		return DB, nil
 	}
 
-	createTable := `
-		CREATE TABLE IF NOT EXISTS products (
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			name TEXT NOT NULL,
-			price INTEGER NOT NULL,
-			stock INTEGER NOT NULL
-		);
-
-		CREATE TABLE IF NOT EXISTS categories (
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			name VARCHAR(100) NOT NULL,
-			description TEXT NULL
-		);
-	`
-
-	_, err = DB.Exec(createTable)
-	if err != nil {
-		log.Fatal(err)
+	dsn := os.Getenv("DATABASE_URL")
+	if dsn == "" {
+		log.Fatal("DATABASE_URL is not set")
 	}
 
-	log.Println("Database connected & table ready")
-	return DB, nil
+	db, err := sql.Open("postgres", dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	db.SetMaxOpenConns(5)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(5 * time.Minute)
+
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
+	DB = db
+	return db, nil
 }

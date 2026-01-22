@@ -40,43 +40,58 @@ func (p *CategoryRepositoryImpl) GetCategories() ([]domain.Category, error) {
 }
 
 func (p *CategoryRepositoryImpl) GetCategoryByID(id int) (*domain.Category, error) {
-	row := p.db.QueryRow("SELECT * from categories WHERE id = ?", id)
 	var category domain.Category
-	if err := row.Scan(&category.ID, &category.Name, &category.Description); err != nil {
+	err := p.db.QueryRow("SELECT * FROM categories WHERE id = $1", id).Scan(&category.ID, &category.Name, &category.Description)
+
+	if err != nil {
 		return nil, err
 	}
 	return &category, nil
 }
 
 func (p *CategoryRepositoryImpl) CreateCategory(category *domain.Category) (*domain.Category, error) {
-	result, err := p.db.Exec("INSERT INTO categories (name, description) VALUES (?, ?)",
-		category.Name, category.Description)
+	query := `
+		INSERT INTO categories (name, description)
+		VALUES ($1, $2)
+		RETURNING id
+	`
+
+	err := p.db.QueryRow(
+		query,
+		category.Name,
+		category.Description,
+	).Scan(&category.ID)
+
 	if err != nil {
 		return nil, err
 	}
 
-	// Get the ID of the newly inserted product
-	id, err := result.LastInsertId()
-	if err != nil {
-		return nil, err
-	}
-
-	// Set the ID of the product and return it
-	category.ID = int(id)
 	return category, nil
 }
 
 func (p *CategoryRepositoryImpl) UpdateCategory(id int, category *domain.Category) (*domain.Category, error) {
-	_, err := p.db.Exec("UPDATE categories SET name = ?, description = ? WHERE id = ?",
-		category.Name, category.Description, id)
+	query := `
+		UPDATE categories SET name = $1, description = $2 WHERE id = $3
+		RETURNING id
+	`
+
+	err := p.db.QueryRow(
+		query,
+		category.Name,
+		category.Description,
+		id,
+	).Scan(&category.ID)
+
 	if err != nil {
 		return nil, err
 	}
+
 	return category, nil
 }
 
 func (p *CategoryRepositoryImpl) DeleteCategory(id int) error {
-	_, err := p.db.Exec("DELETE FROM categories WHERE id = ?", id)
+	query := "DELETE FROM categories WHERE id = $1"
+	_, err := p.db.Exec(query, id)
 	if err != nil {
 		return err
 	}
