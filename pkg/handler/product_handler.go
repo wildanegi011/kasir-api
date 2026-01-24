@@ -96,8 +96,8 @@ func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.Name == "" || req.Price <= 0 || req.Stock < 0 {
-		utils.ErrorResponse(w, http.StatusBadRequest, "Name, price (must be > 0), and stock (must be >= 0) are required")
+	if err := utils.Validate.Struct(req); err != nil {
+		utils.ValidationErrorResponse(w, err)
 		return
 	}
 
@@ -131,8 +131,8 @@ func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.Name == "" || req.Price <= 0 || req.Stock < 0 {
-		utils.ErrorResponse(w, http.StatusBadRequest, "Name, price (must be > 0), and stock (must be >= 0) are required")
+	if err := utils.Validate.Struct(req); err != nil {
+		utils.ValidationErrorResponse(w, err)
 		return
 	}
 

@@ -5,7 +5,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "kasir-api-chi.vercel.app/",
+    "host": "kasir-api-chi.vercel.app",
     "basePath": "/",
     "paths": {
         "/api/categories": {
@@ -402,20 +402,31 @@
     "definitions": {
         "kasir-api_pkg_dto.CategoryRequest": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1
                 }
             }
         },
         "kasir-api_pkg_dto.ProductRequest": {
             "type": "object",
+            "required": [
+                "name",
+                "price",
+                "stock"
+            ],
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1
                 },
                 "price": {
                     "type": "integer"

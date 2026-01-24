@@ -409,20 +409,31 @@ const docTemplate = `{
     "definitions": {
         "kasir-api_pkg_dto.CategoryRequest": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 255
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1
                 }
             }
         },
         "kasir-api_pkg_dto.ProductRequest": {
             "type": "object",
+            "required": [
+                "name",
+                "price",
+                "stock"
+            ],
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1
                 },
                 "price": {
                     "type": "integer"
@@ -438,7 +449,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "kasir-api-chi.vercel.app/",
+	Host:             "kasir-api-chi.vercel.app",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Kasir API",

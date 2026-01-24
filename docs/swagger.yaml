@@ -3,20 +3,29 @@ definitions:
   kasir-api_pkg_dto.CategoryRequest:
     properties:
       description:
+        maxLength: 255
         type: string
       name:
+        minLength: 1
         type: string
+    required:
+    - name
     type: object
   kasir-api_pkg_dto.ProductRequest:
     properties:
       name:
+        minLength: 1
         type: string
       price:
         type: integer
       stock:
         type: integer
+    required:
+    - name
+    - price
+    - stock
     type: object
-host: kasir-api-chi.vercel.app/
+host: kasir-api-chi.vercel.app
 info:
   contact: {}
   title: Kasir API

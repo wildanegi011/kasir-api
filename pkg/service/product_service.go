@@ -28,6 +28,10 @@ func (s *ProductServiceImpl) GetProducts(page int, pageSize int) ([]domain.Produ
 		return nil, 0, err
 	}
 
+	if products == nil {
+		products = []domain.Product{}
+	}
+
 	return products, total, nil
 }
 

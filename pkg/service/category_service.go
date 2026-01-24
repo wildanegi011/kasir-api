@@ -28,6 +28,10 @@ func (s *CategoryServiceImpl) GetCategories(page int, pageSize int) ([]domain.Ca
 		return nil, 0, err
 	}
 
+	if categories == nil {
+		categories = []domain.Category{}
+	}
+
 	return categories, total, nil
 }
 

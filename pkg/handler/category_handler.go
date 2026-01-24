@@ -96,8 +96,8 @@ func (h *CategoryHandler) CreateCategory(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if req.Name == "" {
-		utils.ErrorResponse(w, http.StatusBadRequest, "Name required")
+	if err := utils.Validate.Struct(req); err != nil {
+		utils.ValidationErrorResponse(w, err)
 		return
 	}
 
@@ -131,8 +131,8 @@ func (h *CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if req.Name == "" {
-		utils.ErrorResponse(w, http.StatusBadRequest, "Name required")
+	if err := utils.Validate.Struct(req); err != nil {
+		utils.ValidationErrorResponse(w, err)
 		return
 	}
 
