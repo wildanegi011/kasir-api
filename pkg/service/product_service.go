@@ -7,7 +7,7 @@ import (
 )
 
 type ProductService interface {
-	GetProducts() ([]domain.Product, error)
+	GetProducts(page int, pageSize int) ([]domain.Product, int, error)
 	GetProductByID(id int) (*domain.Product, error)
 	CreateProduct(product *domain.Product) (*domain.Product, error)
 	UpdateProduct(id int, product *domain.Product) (*domain.Product, error)
@@ -22,8 +22,13 @@ func NewProductService(productRepository repository.ProductRepository) ProductSe
 	return &ProductServiceImpl{productRepository: productRepository}
 }
 
-func (s *ProductServiceImpl) GetProducts() ([]domain.Product, error) {
-	return s.productRepository.GetProducts()
+func (s *ProductServiceImpl) GetProducts(page int, pageSize int) ([]domain.Product, int, error) {
+	products, total, err := s.productRepository.GetProducts(page, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return products, total, nil
 }
 
 func (s *ProductServiceImpl) GetProductByID(id int) (*domain.Product, error) {

@@ -6,7 +6,7 @@ import (
 )
 
 type CategoryRepository interface {
-	GetCategories() ([]domain.Category, error)
+	GetCategories(page int, pageSize int) ([]domain.Category, int, error)
 	GetCategoryByID(id int) (*domain.Category, error)
 	CreateCategory(category *domain.Category) (*domain.Category, error)
 	UpdateCategory(id int, category *domain.Category) (*domain.Category, error)
@@ -21,10 +21,16 @@ func NewCategoryRepository(db *sql.DB) CategoryRepository {
 	return &CategoryRepositoryImpl{db: db}
 }
 
-func (p *CategoryRepositoryImpl) GetCategories() ([]domain.Category, error) {
-	rows, err := p.db.Query("SELECT * FROM categories")
+func (p *CategoryRepositoryImpl) GetCategories(page int, pageSize int) ([]domain.Category, int, error) {
+	var total int
+	err := p.db.QueryRow("SELECT COUNT(*) FROM categories").Scan(&total)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
+	}
+
+	rows, err := p.db.Query("SELECT * FROM categories LIMIT $1 OFFSET $2", pageSize, (page-1)*pageSize)
+	if err != nil {
+		return nil, 0, err
 	}
 	defer rows.Close()
 
@@ -32,11 +38,11 @@ func (p *CategoryRepositoryImpl) GetCategories() ([]domain.Category, error) {
 	for rows.Next() {
 		var category domain.Category
 		if err := rows.Scan(&category.ID, &category.Name, &category.Description); err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 		categories = append(categories, category)
 	}
-	return categories, nil
+	return categories, total, nil
 }
 
 func (p *CategoryRepositoryImpl) GetCategoryByID(id int) (*domain.Category, error) {

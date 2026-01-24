@@ -27,6 +27,17 @@ paths:
       consumes:
       - application/json
       description: Mengambil semua data kategori
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: page_size
+        type: integer
       produces:
       - application/json
       responses:
@@ -147,6 +158,17 @@ paths:
       consumes:
       - application/json
       description: Mengambil semua data produk
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: page_size
+        type: integer
       produces:
       - application/json
       responses:

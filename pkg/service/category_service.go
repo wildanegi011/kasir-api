@@ -7,7 +7,7 @@ import (
 )
 
 type CategoryService interface {
-	GetCategories() ([]domain.Category, error)
+	GetCategories(page int, pageSize int) ([]domain.Category, int, error)
 	GetCategoryByID(id int) (*domain.Category, error)
 	CreateCategory(category *domain.Category) (*domain.Category, error)
 	UpdateCategory(id int, category *domain.Category) (*domain.Category, error)
@@ -22,8 +22,13 @@ func NewCategoryService(categoryRepository repository.CategoryRepository) Catego
 	return &CategoryServiceImpl{categoryRepository: categoryRepository}
 }
 
-func (s *CategoryServiceImpl) GetCategories() ([]domain.Category, error) {
-	return s.categoryRepository.GetCategories()
+func (s *CategoryServiceImpl) GetCategories(page int, pageSize int) ([]domain.Category, int, error) {
+	categories, total, err := s.categoryRepository.GetCategories(page, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return categories, total, nil
 }
 
 func (s *CategoryServiceImpl) GetCategoryByID(id int) (*domain.Category, error) {

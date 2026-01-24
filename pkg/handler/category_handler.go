@@ -25,25 +25,32 @@ func NewCategoryHandler(categoryService service.CategoryService) *CategoryHandle
 // @Tags categories
 // @Accept json
 // @Produce json
+// @Param page query int false "Page number" default(1)
+// @Param page_size query int false "Page size" default(10)
 // @Success 200 {object} map[string]interface{}
 // @Router /api/categories [get]
 func (h *CategoryHandler) GetCategories(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	categories, err := h.categoryService.GetCategories()
+	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	if err != nil || page <= 0 {
+		page = 1
+	}
+	pageSize, err := strconv.Atoi(r.URL.Query().Get("page_size"))
+	if err != nil || pageSize <= 0 {
+		pageSize = 10
+	}
+	categories, total, err := h.categoryService.GetCategories(page, pageSize)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(utils.Response{
-			Status:  false,
-			Message: "failed to get categories",
-		})
+		utils.ErrorResponse(w, http.StatusInternalServerError, "failed to get categories")
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(utils.Response{
-		Status:  true,
-		Message: "successfully get categories",
-		Data:    categories,
-	})
+
+	utils.SuccessResponse(
+		w,
+		http.StatusOK,
+		"Categories found",
+		categories,
+		utils.WithPagination(total, page, pageSize),
+	)
 }
 
 // GetCategoryByID godoc
@@ -57,33 +64,19 @@ func (h *CategoryHandler) GetCategories(w http.ResponseWriter, r *http.Request) 
 // @Failure 404 {object} map[string]string
 // @Router /api/categories/{id} [get]
 func (h *CategoryHandler) GetCategoryByID(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	id := strings.TrimPrefix(r.URL.Path, "/api/categories/")
 	idInt, err := strconv.Atoi(id)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(utils.Response{
-			Status:  false,
-			Message: "Invalid Request",
-		})
+		utils.ErrorResponse(w, http.StatusBadRequest, "Invalid Request")
 		return
 	}
 	category, err := h.categoryService.GetCategoryByID(idInt)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(utils.Response{
-			Status:  false,
-			Message: "failed to get category",
-		})
+		utils.ErrorResponse(w, http.StatusBadRequest, utils.ErrCategoryNotFound.Error())
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(utils.Response{
-		Status:  true,
-		Message: "successfully get category",
-		Data:    category,
-	})
+	utils.SuccessResponse(w, http.StatusOK, "Category found", category)
 }
 
 // CreateCategory godoc
@@ -97,44 +90,25 @@ func (h *CategoryHandler) GetCategoryByID(w http.ResponseWriter, r *http.Request
 // @Failure 400 {object} map[string]string
 // @Router /api/categories [post]
 func (h *CategoryHandler) CreateCategory(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	var req dto.CategoryRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(utils.Response{
-			Status:  false,
-			Message: "Invalid request body",
-		})
+		utils.ErrorResponse(w, http.StatusBadRequest, "Invalid Request")
 		return
 	}
 
 	if req.Name == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(utils.Response{
-			Status:  false,
-			Message: "Name required",
-		})
+		utils.ErrorResponse(w, http.StatusBadRequest, "Name required")
 		return
 	}
 
 	category := dto.CategoryReqToDomain(&req)
 
 	if _, err := h.categoryService.CreateCategory(category); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(utils.Response{
-			Status:  false,
-			Message: "Failed to create category",
-		})
+		utils.ErrorResponse(w, http.StatusInternalServerError, "Failed to create category")
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(utils.Response{
-		Status:  true,
-		Message: "Category created successfully",
-		Data:    category,
-	})
+	utils.SuccessResponse(w, http.StatusCreated, "Category created successfully", category)
 }
 
 // UpdateCategory godoc
@@ -148,26 +122,17 @@ func (h *CategoryHandler) CreateCategory(w http.ResponseWriter, r *http.Request)
 // @Success 200 {object} map[string]interface{}
 // @Router /api/categories/{id} [put]
 func (h *CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	id := strings.TrimPrefix(r.URL.Path, "/api/categories/")
 	idInt, _ := strconv.Atoi(id)
 
 	var req dto.CategoryRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(utils.Response{
-			Status:  false,
-			Message: "Invalid request body",
-		})
+		utils.ErrorResponse(w, http.StatusBadRequest, "Invalid Request")
 		return
 	}
 
 	if req.Name == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(utils.Response{
-			Status:  false,
-			Message: "Name required",
-		})
+		utils.ErrorResponse(w, http.StatusBadRequest, "Name required")
 		return
 	}
 
@@ -175,29 +140,16 @@ func (h *CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request)
 	updatedCategory, err := h.categoryService.UpdateCategory(idInt, category)
 	if err != nil {
 		if errors.Is(err, utils.ErrCategoryNotFound) {
-			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(utils.Response{
-				Status:  false,
-				Message: utils.ErrCategoryNotFound.Error(),
-			})
+			utils.ErrorResponse(w, http.StatusNotFound, utils.ErrCategoryNotFound.Error())
 			return
 		}
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(utils.Response{
-			Status:  false,
-			Message: "Failed to update category",
-		})
+		utils.ErrorResponse(w, http.StatusInternalServerError, "Failed to update category")
 		return
 	}
 
 	updatedCategory.ID = idInt
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(utils.Response{
-		Status:  true,
-		Message: "Category updated successfully",
-		Data:    updatedCategory,
-	})
+	utils.SuccessResponse(w, http.StatusOK, "Category updated successfully", updatedCategory)
 }
 
 // DeleteCategory godoc
@@ -210,38 +162,20 @@ func (h *CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request)
 // @Success 200 {object} map[string]interface{}
 // @Router /api/categories/{id} [delete]
 func (h *CategoryHandler) DeleteCategory(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	id := strings.TrimPrefix(r.URL.Path, "/api/categories/")
 	idInt, err := strconv.Atoi(id)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(utils.Response{
-			Status:  false,
-			Message: "Invalid Request",
-		})
+		utils.ErrorResponse(w, http.StatusBadRequest, "Invalid Request")
 		return
 	}
 	if err := h.categoryService.DeleteCategory(idInt); err != nil {
 		if errors.Is(err, utils.ErrCategoryNotFound) {
-			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(utils.Response{
-				Status:  false,
-				Message: utils.ErrCategoryNotFound.Error(),
-			})
+			utils.ErrorResponse(w, http.StatusNotFound, utils.ErrCategoryNotFound.Error())
 			return
 		}
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(utils.Response{
-			Status:  false,
-			Message: "failed to delete category",
-		})
+		utils.ErrorResponse(w, http.StatusInternalServerError, "failed to delete category")
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(utils.Response{
-		Status:  true,
-		Message: "successfully delete category",
-	})
+	utils.SuccessResponse(w, http.StatusOK, "Category deleted successfully", nil)
 }

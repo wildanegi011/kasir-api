@@ -6,7 +6,7 @@ import (
 )
 
 type ProductRepository interface {
-	GetProducts() ([]domain.Product, error)
+	GetProducts(page int, pageSize int) ([]domain.Product, int, error)
 	GetProductByID(id int) (*domain.Product, error)
 	CreateProduct(product *domain.Product) (*domain.Product, error)
 	UpdateProduct(id int, product *domain.Product) (*domain.Product, error)
@@ -21,10 +21,16 @@ func NewProductRepository(db *sql.DB) ProductRepository {
 	return &ProductRepositoryImpl{db: db}
 }
 
-func (p *ProductRepositoryImpl) GetProducts() ([]domain.Product, error) {
-	rows, err := p.db.Query("SELECT * FROM products")
+func (p *ProductRepositoryImpl) GetProducts(page int, pageSize int) ([]domain.Product, int, error) {
+	var total int
+	err := p.db.QueryRow("SELECT COUNT(*) FROM products").Scan(&total)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
+	}
+
+	rows, err := p.db.Query("SELECT * FROM products LIMIT $1 OFFSET $2", pageSize, (page-1)*pageSize)
+	if err != nil {
+		return nil, 0, err
 	}
 	defer rows.Close()
 
@@ -32,11 +38,11 @@ func (p *ProductRepositoryImpl) GetProducts() ([]domain.Product, error) {
 	for rows.Next() {
 		var product domain.Product
 		if err := rows.Scan(&product.ID, &product.Name, &product.Price, &product.Stock); err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 		products = append(products, product)
 	}
-	return products, nil
+	return products, total, nil
 }
 
 func (p *ProductRepositoryImpl) GetProductByID(id int) (*domain.Product, error) {
