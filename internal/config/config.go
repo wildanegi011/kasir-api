@@ -2,7 +2,6 @@ package config
 
 import (
 	"log"
-	"os"
 	"strings"
 	"sync"
 
@@ -17,6 +16,7 @@ type Config struct {
 type AppConfig struct {
 	Name string `mapstructure:"name"`
 	Port string `mapstructure:"port"`
+	Mode string `mapstructure:"mode"`
 }
 
 type DatabaseConfig struct {
@@ -31,25 +31,24 @@ var (
 )
 
 func LoadConfig() *Config {
+
 	v := viper.New()
 
-	v.AutomaticEnv()
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	v.AutomaticEnv()
 
-	v.SetDefault("app.port", "8080")
-	v.SetDefault("database.max_open_conns", 10)
-	v.SetDefault("database.max_idle_conns", 5)
-
-	if os.Getenv("RAILWAY_ENVIRONMENT") == "" {
+	if cfg.App.Mode == "development" {
 		v.AddConfigPath("./internal/config")
 		v.SetConfigName("config")
 		v.SetConfigType("yaml")
-		_ = v.ReadInConfig()
+		if err := v.ReadInConfig(); err != nil {
+			log.Println("failed to read config", err)
+		}
 	}
 
 	var config Config
 	if err := v.Unmarshal(&config); err != nil {
-		log.Fatal("config: failed to unmarshal:", err)
+		log.Println("failed to unmarshal config", err)
 	}
 
 	return &config

@@ -1,0 +1,6 @@
+APP_NAME=kasir-api
+APP_PORT=8080
+
+DATABASE_URL=postgresql://neondb_owner:npg_tOBo24XrSsFP@ep-rough-fog-ahmbrstr-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+DATABASE_MAX_OPEN_CONNS=10
+DATABASE_MAX_IDLE_CONNS=5
