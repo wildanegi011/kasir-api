@@ -5,6 +5,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
@@ -30,6 +31,8 @@ var (
 )
 
 func LoadConfig() *Config {
+	_ = godotenv.Load()
+
 	v := viper.New()
 
 	v.SetEnvPrefix("KASIR")
@@ -59,9 +62,6 @@ func LoadConfig() *Config {
 func GetConfig() *Config {
 	once.Do(func() {
 		cfg = LoadConfig()
-		if cfg == nil {
-			log.Fatal("config failed to load")
-		}
 	})
 	return cfg
 }
