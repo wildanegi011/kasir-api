@@ -449,7 +449,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "https://kasir-api-production-1c80.up.railway.app/",
+	Host:             "kasir-api-production-1c80.up.railway.app",
 	BasePath:         "/",
 	Schemes:          []string{"http", "https"},
 	Title:            "Kasir API",

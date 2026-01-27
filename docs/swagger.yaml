@@ -25,7 +25,7 @@ definitions:
     - price
     - stock
     type: object
-host: https://kasir-api-production-1c80.up.railway.app/
+host: kasir-api-production-1c80.up.railway.app
 info:
   contact: {}
   title: Kasir API

@@ -20,7 +20,7 @@ import (
 
 // @title Kasir API
 // @version 1.0
-// @host https://kasir-api-production-1c80.up.railway.app/
+// @host kasir-api-production-1c80.up.railway.app
 // @schemes http https
 // @BasePath /
 func main() {
