@@ -46,13 +46,11 @@ func LoadConfig() *Config {
 
 	if err := v.ReadInConfig(); err != nil {
 		log.Println("failed to read config", err)
-		return nil
 	}
 
 	var config Config
 	if err := v.Unmarshal(&config); err != nil {
 		log.Println("failed to unmarshal config", err)
-		return nil
 	}
 
 	return &config
@@ -61,6 +59,9 @@ func LoadConfig() *Config {
 func GetConfig() *Config {
 	once.Do(func() {
 		cfg = LoadConfig()
+		if cfg == nil {
+			log.Fatal("config failed to load")
+		}
 	})
 	return cfg
 }
