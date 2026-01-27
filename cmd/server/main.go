@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 
 	"kasir-api/internal/config"
 	"kasir-api/internal/database"
@@ -67,8 +68,15 @@ func main() {
 
 	http.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 
-	fmt.Println("server running di localhost:8080")
-	if err = http.ListenAndServe(":"+cfg.App.Port, nil); err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = cfg.App.Port // local/dev
+	}
+
+	addr := ":" + port
+
+	fmt.Println("server running di", addr)
+	if err = http.ListenAndServe(addr, nil); err != nil {
 		panic("failed running server")
 	}
 }
