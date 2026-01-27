@@ -16,7 +16,6 @@ type Config struct {
 type AppConfig struct {
 	Name string `mapstructure:"name"`
 	Port string `mapstructure:"port"`
-	Mode string `mapstructure:"mode"`
 }
 
 type DatabaseConfig struct {
@@ -38,8 +37,6 @@ func LoadConfig() *Config {
 	v.AutomaticEnv()
 
 	_ = v.BindEnv("app.name", "APP_NAME")
-	_ = v.BindEnv("app.port", "APP_PORT")
-	_ = v.BindEnv("app.mode", "APP_MODE")
 
 	_ = v.BindEnv("database.url", "DATABASE_URL")
 	_ = v.BindEnv("database.max_open_conns", "DATABASE_MAX_OPEN_CONNS")
