@@ -37,15 +37,6 @@ func LoadConfig() *Config {
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	v.AutomaticEnv()
 
-	if cfg.App.Mode == "development" {
-		v.AddConfigPath("./internal/config")
-		v.SetConfigName("config")
-		v.SetConfigType("yaml")
-		if err := v.ReadInConfig(); err != nil {
-			log.Println("failed to read config", err)
-		}
-	}
-
 	var config Config
 	if err := v.Unmarshal(&config); err != nil {
 		log.Println("failed to unmarshal config", err)
