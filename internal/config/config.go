@@ -2,6 +2,7 @@ package config
 
 import (
 	"log"
+	"os"
 	"strings"
 	"sync"
 
@@ -32,20 +33,23 @@ var (
 func LoadConfig() *Config {
 	v := viper.New()
 
-	v.AddConfigPath("./internal/config")
-	v.SetConfigName("config")
-	v.SetConfigType("yaml")
-
 	v.AutomaticEnv()
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-	if err := v.ReadInConfig(); err != nil {
-		log.Println("failed to read config", err)
+	v.SetDefault("app.port", "8080")
+	v.SetDefault("database.max_open_conns", 10)
+	v.SetDefault("database.max_idle_conns", 5)
+
+	if os.Getenv("RAILWAY_ENVIRONMENT") == "" {
+		v.AddConfigPath("./internal/config")
+		v.SetConfigName("config")
+		v.SetConfigType("yaml")
+		_ = v.ReadInConfig()
 	}
 
 	var config Config
 	if err := v.Unmarshal(&config); err != nil {
-		log.Println("failed to unmarshal config", err)
+		log.Fatal("config: failed to unmarshal:", err)
 	}
 
 	return &config
