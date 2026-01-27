@@ -2,6 +2,7 @@ package config
 
 import (
 	"log"
+	"strings"
 	"sync"
 
 	"github.com/spf13/viper"
@@ -34,7 +35,9 @@ func LoadConfig() *Config {
 	v.AddConfigPath("./internal/config")
 	v.SetConfigName("config")
 	v.SetConfigType("yaml")
+
 	v.AutomaticEnv()
+	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	if err := v.ReadInConfig(); err != nil {
 		log.Println("failed to read config", err)
