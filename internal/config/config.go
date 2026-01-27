@@ -2,6 +2,7 @@ package config
 
 import (
 	"log"
+	"strings"
 	"sync"
 
 	"github.com/spf13/viper"
@@ -30,6 +31,14 @@ var (
 
 func LoadConfig() *Config {
 	v := viper.New()
+
+	v.SetEnvPrefix("KASIR")
+	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	v.AutomaticEnv()
+
+	v.SetDefault("app.port", "8080")
+	v.SetDefault("database.max_open_conns", 10)
+	v.SetDefault("database.max_idle_conns", 5)
 
 	v.AddConfigPath("./internal/config")
 	v.SetConfigName("config")

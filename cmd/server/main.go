@@ -68,7 +68,7 @@ func main() {
 	http.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 
 	fmt.Println("server running di localhost:8080")
-	if err = http.ListenAndServe(":8080", nil); err != nil {
+	if err = http.ListenAndServe(":"+cfg.App.Port, nil); err != nil {
 		panic("failed running server")
 	}
 }
