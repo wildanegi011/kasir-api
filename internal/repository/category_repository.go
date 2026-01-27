@@ -2,7 +2,7 @@ package repository
 
 import (
 	"database/sql"
-	"kasir-api/pkg/domain"
+	"kasir-api/internal/domain"
 )
 
 type CategoryRepository interface {

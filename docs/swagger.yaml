@@ -1,6 +1,6 @@
 basePath: /
 definitions:
-  kasir-api_pkg_dto.CategoryRequest:
+  kasir-api_internal_dto.CategoryRequest:
     properties:
       description:
         maxLength: 255
@@ -11,7 +11,7 @@ definitions:
     required:
     - name
     type: object
-  kasir-api_pkg_dto.ProductRequest:
+  kasir-api_internal_dto.ProductRequest:
     properties:
       name:
         minLength: 1
@@ -25,7 +25,7 @@ definitions:
     - price
     - stock
     type: object
-host: kasir-api-chi.vercel.app
+host: https://kasir-api-production-1c80.up.railway.app/
 info:
   contact: {}
   title: Kasir API
@@ -68,7 +68,7 @@ paths:
         name: category
         required: true
         schema:
-          $ref: '#/definitions/kasir-api_pkg_dto.CategoryRequest'
+          $ref: '#/definitions/kasir-api_internal_dto.CategoryRequest'
       produces:
       - application/json
       responses:
@@ -150,7 +150,7 @@ paths:
         name: category
         required: true
         schema:
-          $ref: '#/definitions/kasir-api_pkg_dto.CategoryRequest'
+          $ref: '#/definitions/kasir-api_internal_dto.CategoryRequest'
       produces:
       - application/json
       responses:
@@ -199,7 +199,7 @@ paths:
         name: product
         required: true
         schema:
-          $ref: '#/definitions/kasir-api_pkg_dto.ProductRequest'
+          $ref: '#/definitions/kasir-api_internal_dto.ProductRequest'
       produces:
       - application/json
       responses:
@@ -281,7 +281,7 @@ paths:
         name: product
         required: true
         schema:
-          $ref: '#/definitions/kasir-api_pkg_dto.ProductRequest'
+          $ref: '#/definitions/kasir-api_internal_dto.ProductRequest'
       produces:
       - application/json
       responses:
@@ -293,4 +293,7 @@ paths:
       summary: Update product
       tags:
       - products
+schemes:
+- http
+- https
 swagger: "2.0"

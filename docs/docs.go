@@ -73,7 +73,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/kasir-api_pkg_dto.CategoryRequest"
+                            "$ref": "#/definitions/kasir-api_internal_dto.CategoryRequest"
                         }
                     }
                 ],
@@ -164,7 +164,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/kasir-api_pkg_dto.CategoryRequest"
+                            "$ref": "#/definitions/kasir-api_internal_dto.CategoryRequest"
                         }
                     }
                 ],
@@ -268,7 +268,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/kasir-api_pkg_dto.ProductRequest"
+                            "$ref": "#/definitions/kasir-api_internal_dto.ProductRequest"
                         }
                     }
                 ],
@@ -359,7 +359,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/kasir-api_pkg_dto.ProductRequest"
+                            "$ref": "#/definitions/kasir-api_internal_dto.ProductRequest"
                         }
                     }
                 ],
@@ -407,7 +407,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "kasir-api_pkg_dto.CategoryRequest": {
+        "kasir-api_internal_dto.CategoryRequest": {
             "type": "object",
             "required": [
                 "name"
@@ -423,7 +423,7 @@ const docTemplate = `{
                 }
             }
         },
-        "kasir-api_pkg_dto.ProductRequest": {
+        "kasir-api_internal_dto.ProductRequest": {
             "type": "object",
             "required": [
                 "name",
@@ -449,9 +449,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "kasir-api-chi.vercel.app",
+	Host:             "https://kasir-api-production-1c80.up.railway.app/",
 	BasePath:         "/",
-	Schemes:          []string{},
+	Schemes:          []string{"http", "https"},
 	Title:            "Kasir API",
 	Description:      "",
 	InfoInstanceName: "swagger",

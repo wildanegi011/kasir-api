@@ -1,0 +1,9 @@
+app:
+  url: http://localhost:8080
+  name: kasir-api
+  port: 8080
+
+database:
+  url: ""
+  max_open_conns: 5
+  max_idle_conns: 5

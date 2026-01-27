@@ -58,10 +58,7 @@ func MapValidationErrors(err error) []FieldError {
 	return errors
 }
 
-func ValidationErrorResponse(
-	w http.ResponseWriter,
-	err error,
-) error {
+func ValidationErrorResponse(w http.ResponseWriter, err error) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusBadRequest)
 

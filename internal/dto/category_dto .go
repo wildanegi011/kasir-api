@@ -1,6 +1,6 @@
 package dto
 
-import "kasir-api/pkg/domain"
+import "kasir-api/internal/domain"
 
 type CategoryRequest struct {
 	Name        string `json:"name" validate:"required,min=1"`

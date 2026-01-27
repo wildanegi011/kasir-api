@@ -3,9 +3,9 @@ package handler
 import (
 	"encoding/json"
 	"errors"
-	"kasir-api/pkg/dto"
-	"kasir-api/pkg/service"
-	"kasir-api/pkg/utils"
+	"kasir-api/internal/dto"
+	"kasir-api/internal/service"
+	"kasir-api/internal/utils"
 	"net/http"
 	"strconv"
 	"strings"

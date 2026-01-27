@@ -2,7 +2,7 @@ package repository
 
 import (
 	"database/sql"
-	"kasir-api/pkg/domain"
+	"kasir-api/internal/domain"
 )
 
 type ProductRepository interface {
@@ -37,7 +37,7 @@ func (p *ProductRepositoryImpl) GetProducts(page int, pageSize int) ([]domain.Pr
 	var products []domain.Product
 	for rows.Next() {
 		var product domain.Product
-		if err := rows.Scan(&product.ID, &product.Name, &product.Price, &product.Stock); err != nil {
+		if err := rows.Scan(&product.ID, &product.Name, &product.Price, &product.Stock, &product.CategoryID); err != nil {
 			return nil, 0, err
 		}
 		products = append(products, product)

@@ -1,11 +1,15 @@
 {
+    "schemes": [
+        "http",
+        "https"
+    ],
     "swagger": "2.0",
     "info": {
         "title": "Kasir API",
         "contact": {},
         "version": "1.0"
     },
-    "host": "kasir-api-chi.vercel.app",
+    "host": "https://kasir-api-production-1c80.up.railway.app/",
     "basePath": "/",
     "paths": {
         "/api/categories": {
@@ -66,7 +70,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/kasir-api_pkg_dto.CategoryRequest"
+                            "$ref": "#/definitions/kasir-api_internal_dto.CategoryRequest"
                         }
                     }
                 ],
@@ -157,7 +161,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/kasir-api_pkg_dto.CategoryRequest"
+                            "$ref": "#/definitions/kasir-api_internal_dto.CategoryRequest"
                         }
                     }
                 ],
@@ -261,7 +265,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/kasir-api_pkg_dto.ProductRequest"
+                            "$ref": "#/definitions/kasir-api_internal_dto.ProductRequest"
                         }
                     }
                 ],
@@ -352,7 +356,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/kasir-api_pkg_dto.ProductRequest"
+                            "$ref": "#/definitions/kasir-api_internal_dto.ProductRequest"
                         }
                     }
                 ],
@@ -400,7 +404,7 @@
         }
     },
     "definitions": {
-        "kasir-api_pkg_dto.CategoryRequest": {
+        "kasir-api_internal_dto.CategoryRequest": {
             "type": "object",
             "required": [
                 "name"
@@ -416,7 +420,7 @@
                 }
             }
         },
-        "kasir-api_pkg_dto.ProductRequest": {
+        "kasir-api_internal_dto.ProductRequest": {
             "type": "object",
             "required": [
                 "name",

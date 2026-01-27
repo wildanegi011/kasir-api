@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"kasir-api/pkg/config"
-	"kasir-api/pkg/handler"
-	"kasir-api/pkg/repository"
-	"kasir-api/pkg/service"
-	"kasir-api/pkg/utils"
+	"kasir-api/internal/config"
+	"kasir-api/internal/database"
+	"kasir-api/internal/handler"
+	"kasir-api/internal/repository"
+	"kasir-api/internal/service"
+	"kasir-api/internal/utils"
 
 	_ "kasir-api/docs"
 
@@ -18,12 +19,17 @@ import (
 
 // @title Kasir API
 // @version 1.0
-// @host kasir-api-chi.vercel.app
+// @host https://kasir-api-production-1c80.up.railway.app/
+// @schemes http https
 // @BasePath /
-
 func main() {
+	cfg := config.GetConfig()
 
-	db, _ := config.InitDB()
+	db, closeDB, err := database.NewPostgres(&cfg.Database)
+	if err != nil {
+		panic("failed connect to database")
+	}
+	defer closeDB()
 
 	// =================== Product ===================================
 	productRepository := repository.NewProductRepository(db)
@@ -62,8 +68,7 @@ func main() {
 	http.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 
 	fmt.Println("server running di localhost:8080")
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		panic("gagal running server")
+	if err = http.ListenAndServe(":8080", nil); err != nil {
+		panic("failed running server")
 	}
 }
