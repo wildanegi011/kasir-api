@@ -2,10 +2,8 @@ package config
 
 import (
 	"log"
-	"strings"
 	"sync"
 
-	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
@@ -31,21 +29,12 @@ var (
 )
 
 func LoadConfig() *Config {
-	_ = godotenv.Load()
-
 	v := viper.New()
-
-	v.SetEnvPrefix("KASIR")
-	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	v.AutomaticEnv()
-
-	v.SetDefault("app.port", "8080")
-	v.SetDefault("database.max_open_conns", 10)
-	v.SetDefault("database.max_idle_conns", 5)
 
 	v.AddConfigPath("./internal/config")
 	v.SetConfigName("config")
 	v.SetConfigType("yaml")
+	v.AutomaticEnv()
 
 	if err := v.ReadInConfig(); err != nil {
 		log.Println("failed to read config", err)
