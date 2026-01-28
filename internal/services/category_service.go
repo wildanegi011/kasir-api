@@ -1,9 +1,9 @@
-package service
+package services
 
 import (
 	"context"
-	"kasir-api/internal/domain"
-	"kasir-api/internal/repository"
+	domain "kasir-api/internal/domains"
+	repository "kasir-api/internal/repositories"
 	"kasir-api/internal/utils"
 )
 

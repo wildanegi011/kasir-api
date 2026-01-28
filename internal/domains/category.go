@@ -1,4 +1,4 @@
-package domain
+package domains
 
 type Category struct {
 	ID          int    `json:"id"`

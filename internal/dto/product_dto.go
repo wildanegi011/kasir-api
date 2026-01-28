@@ -1,6 +1,6 @@
 package dto
 
-import "kasir-api/internal/domain"
+import domain "kasir-api/internal/domains"
 
 type ProductRequest struct {
 	Name  string `json:"name" validate:"required,min=1"`

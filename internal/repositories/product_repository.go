@@ -1,9 +1,9 @@
-package repository
+package repositories
 
 import (
 	"context"
 	"database/sql"
-	"kasir-api/internal/domain"
+	domain "kasir-api/internal/domains"
 )
 
 type ProductRepository interface {

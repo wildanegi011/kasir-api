@@ -1,4 +1,4 @@
-package domain
+package domains
 
 type Product struct {
 	ID         int    `json:"id"`

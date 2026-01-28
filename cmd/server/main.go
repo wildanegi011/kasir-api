@@ -8,9 +8,9 @@ import (
 
 	"kasir-api/internal/config"
 	"kasir-api/internal/database"
-	"kasir-api/internal/handler"
-	"kasir-api/internal/repository"
-	"kasir-api/internal/service"
+	handler "kasir-api/internal/handlers"
+	repository "kasir-api/internal/repositories"
+	service "kasir-api/internal/services"
 	"kasir-api/internal/utils"
 
 	_ "kasir-api/docs"

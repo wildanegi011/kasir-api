@@ -1,10 +1,10 @@
-package handler
+package handlers
 
 import (
 	"encoding/json"
 	"errors"
 	"kasir-api/internal/dto"
-	"kasir-api/internal/service"
+	service "kasir-api/internal/services"
 	"kasir-api/internal/utils"
 	"net/http"
 	"strconv"
