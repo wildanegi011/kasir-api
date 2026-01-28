@@ -56,7 +56,6 @@ func LoadConfig() *Config {
 func GetConfig() *Config {
 	once.Do(func() {
 		cfg = LoadConfig()
-		log.Println("loading config", &cfg.Database)
 	})
 	return cfg
 }
