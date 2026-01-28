@@ -38,7 +38,7 @@ func (h *CategoryHandler) GetCategories(w http.ResponseWriter, r *http.Request) 
 	if err != nil || pageSize <= 0 {
 		pageSize = 10
 	}
-	categories, total, err := h.categoryService.GetCategories(page, pageSize)
+	categories, total, err := h.categoryService.GetCategories(r.Context(), page, pageSize)
 	if err != nil {
 		utils.ErrorResponse(w, http.StatusInternalServerError, "failed to get categories")
 		return
@@ -70,7 +70,7 @@ func (h *CategoryHandler) GetCategoryByID(w http.ResponseWriter, r *http.Request
 		utils.ErrorResponse(w, http.StatusBadRequest, "Invalid Request")
 		return
 	}
-	category, err := h.categoryService.GetCategoryByID(idInt)
+	category, err := h.categoryService.GetCategoryByID(r.Context(), idInt)
 	if err != nil {
 		utils.ErrorResponse(w, http.StatusBadRequest, utils.ErrCategoryNotFound.Error())
 		return
@@ -103,7 +103,7 @@ func (h *CategoryHandler) CreateCategory(w http.ResponseWriter, r *http.Request)
 
 	category := dto.CategoryReqToDomain(&req)
 
-	if _, err := h.categoryService.CreateCategory(category); err != nil {
+	if _, err := h.categoryService.CreateCategory(r.Context(), category); err != nil {
 		utils.ErrorResponse(w, http.StatusInternalServerError, "Failed to create category")
 		return
 	}
@@ -137,7 +137,7 @@ func (h *CategoryHandler) UpdateCategory(w http.ResponseWriter, r *http.Request)
 	}
 
 	category := dto.CategoryReqToDomain(&req)
-	updatedCategory, err := h.categoryService.UpdateCategory(idInt, category)
+	updatedCategory, err := h.categoryService.UpdateCategory(r.Context(), idInt, category)
 	if err != nil {
 		if errors.Is(err, utils.ErrCategoryNotFound) {
 			utils.ErrorResponse(w, http.StatusNotFound, utils.ErrCategoryNotFound.Error())
@@ -168,7 +168,7 @@ func (h *CategoryHandler) DeleteCategory(w http.ResponseWriter, r *http.Request)
 		utils.ErrorResponse(w, http.StatusBadRequest, "Invalid Request")
 		return
 	}
-	if err := h.categoryService.DeleteCategory(idInt); err != nil {
+	if err := h.categoryService.DeleteCategory(r.Context(), idInt); err != nil {
 		if errors.Is(err, utils.ErrCategoryNotFound) {
 			utils.ErrorResponse(w, http.StatusNotFound, utils.ErrCategoryNotFound.Error())
 			return

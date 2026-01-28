@@ -1,16 +1,17 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"kasir-api/internal/domain"
 )
 
 type CategoryRepository interface {
-	GetCategories(page int, pageSize int) ([]domain.Category, int, error)
-	GetCategoryByID(id int) (*domain.Category, error)
-	CreateCategory(category *domain.Category) (*domain.Category, error)
-	UpdateCategory(id int, category *domain.Category) (*domain.Category, error)
-	DeleteCategory(id int) error
+	GetCategories(ctx context.Context, page int, pageSize int) ([]domain.Category, int, error)
+	GetCategoryByID(ctx context.Context, id int) (*domain.Category, error)
+	CreateCategory(ctx context.Context, category *domain.Category) (*domain.Category, error)
+	UpdateCategory(ctx context.Context, id int, category *domain.Category) (*domain.Category, error)
+	DeleteCategory(ctx context.Context, id int) error
 }
 
 type CategoryRepositoryImpl struct {
@@ -21,14 +22,14 @@ func NewCategoryRepository(db *sql.DB) CategoryRepository {
 	return &CategoryRepositoryImpl{db: db}
 }
 
-func (p *CategoryRepositoryImpl) GetCategories(page int, pageSize int) ([]domain.Category, int, error) {
+func (p *CategoryRepositoryImpl) GetCategories(ctx context.Context, page int, pageSize int) ([]domain.Category, int, error) {
 	var total int
-	err := p.db.QueryRow("SELECT COUNT(*) FROM categories").Scan(&total)
+	err := p.db.QueryRowContext(ctx, "SELECT COUNT(*) FROM categories").Scan(&total)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	rows, err := p.db.Query("SELECT * FROM categories LIMIT $1 OFFSET $2", pageSize, (page-1)*pageSize)
+	rows, err := p.db.QueryContext(ctx, "SELECT * FROM categories LIMIT $1 OFFSET $2", pageSize, (page-1)*pageSize)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -45,9 +46,9 @@ func (p *CategoryRepositoryImpl) GetCategories(page int, pageSize int) ([]domain
 	return categories, total, nil
 }
 
-func (p *CategoryRepositoryImpl) GetCategoryByID(id int) (*domain.Category, error) {
+func (p *CategoryRepositoryImpl) GetCategoryByID(ctx context.Context, id int) (*domain.Category, error) {
 	var category domain.Category
-	err := p.db.QueryRow("SELECT * FROM categories WHERE id = $1", id).Scan(&category.ID, &category.Name, &category.Description)
+	err := p.db.QueryRowContext(ctx, "SELECT * FROM categories WHERE id = $1", id).Scan(&category.ID, &category.Name, &category.Description)
 
 	if err != nil {
 		return nil, err
@@ -55,14 +56,11 @@ func (p *CategoryRepositoryImpl) GetCategoryByID(id int) (*domain.Category, erro
 	return &category, nil
 }
 
-func (p *CategoryRepositoryImpl) CreateCategory(category *domain.Category) (*domain.Category, error) {
-	query := `
-		INSERT INTO categories (name, description)
-		VALUES ($1, $2)
-		RETURNING id
-	`
+func (p *CategoryRepositoryImpl) CreateCategory(ctx context.Context, category *domain.Category) (*domain.Category, error) {
+	query := `INSERT INTO categories (name, description) VALUES ($1, $2) RETURNING id`
 
-	err := p.db.QueryRow(
+	err := p.db.QueryRowContext(
+		ctx,
 		query,
 		category.Name,
 		category.Description,
@@ -75,13 +73,11 @@ func (p *CategoryRepositoryImpl) CreateCategory(category *domain.Category) (*dom
 	return category, nil
 }
 
-func (p *CategoryRepositoryImpl) UpdateCategory(id int, category *domain.Category) (*domain.Category, error) {
-	query := `
-		UPDATE categories SET name = $1, description = $2 WHERE id = $3
-		RETURNING id
-	`
+func (p *CategoryRepositoryImpl) UpdateCategory(ctx context.Context, id int, category *domain.Category) (*domain.Category, error) {
+	query := `UPDATE categories SET name = $1, description = $2 WHERE id = $3 RETURNING id`
 
-	err := p.db.QueryRow(
+	err := p.db.QueryRowContext(
+		ctx,
 		query,
 		category.Name,
 		category.Description,
@@ -95,9 +91,9 @@ func (p *CategoryRepositoryImpl) UpdateCategory(id int, category *domain.Categor
 	return category, nil
 }
 
-func (p *CategoryRepositoryImpl) DeleteCategory(id int) error {
+func (p *CategoryRepositoryImpl) DeleteCategory(ctx context.Context, id int) error {
 	query := "DELETE FROM categories WHERE id = $1"
-	_, err := p.db.Exec(query, id)
+	_, err := p.db.ExecContext(ctx, query, id)
 	if err != nil {
 		return err
 	}

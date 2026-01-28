@@ -21,11 +21,12 @@ import (
 // @title Kasir API
 // @version 1.0
 // @host kasir-api-production-1c80.up.railway.app
-// @schemes http https
 // @BasePath /
 func main() {
+	// load config
 	cfg := config.GetConfig()
 
+	// connect to database
 	db, closeDB, err := database.NewPostgres(&cfg.Database)
 	if err != nil {
 		panic("failed connect to database")

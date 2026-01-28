@@ -39,7 +39,7 @@ func (h *ProductHandler) GetProducts(w http.ResponseWriter, r *http.Request) {
 		pageSize = 10
 	}
 
-	products, total, err := h.productService.GetProducts(page, pageSize)
+	products, total, err := h.productService.GetProducts(r.Context(), page, pageSize)
 	if err != nil {
 		utils.ErrorResponse(w, http.StatusInternalServerError, "failed to get products")
 		return
@@ -70,7 +70,7 @@ func (h *ProductHandler) GetProductByID(w http.ResponseWriter, r *http.Request) 
 		utils.ErrorResponse(w, http.StatusBadRequest, "Invalid Request")
 		return
 	}
-	product, err := h.productService.GetProductByID(idInt)
+	product, err := h.productService.GetProductByID(r.Context(), idInt)
 	if err != nil {
 		utils.ErrorResponse(w, http.StatusInternalServerError, "failed to get product")
 		return
@@ -103,7 +103,7 @@ func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	product := dto.ProductReqToDomain(&req)
 
-	if _, err := h.productService.CreateProduct(product); err != nil {
+	if _, err := h.productService.CreateProduct(r.Context(), product); err != nil {
 		utils.ErrorResponse(w, http.StatusInternalServerError, "Failed to create product")
 		return
 	}
@@ -137,7 +137,7 @@ func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	product := dto.ProductReqToDomain(&req)
-	updatedProduct, err := h.productService.UpdateProduct(idInt, product)
+	updatedProduct, err := h.productService.UpdateProduct(r.Context(), idInt, product)
 	if err != nil {
 		if errors.Is(err, utils.ErrProductNotFound) {
 			utils.ErrorResponse(w, http.StatusNotFound, utils.ErrProductNotFound.Error())
@@ -168,7 +168,7 @@ func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 		utils.ErrorResponse(w, http.StatusBadRequest, "Invalid Request")
 		return
 	}
-	if err := h.productService.DeleteProduct(idInt); err != nil {
+	if err := h.productService.DeleteProduct(r.Context(), idInt); err != nil {
 		if errors.Is(err, utils.ErrProductNotFound) {
 			utils.ErrorResponse(w, http.StatusNotFound, utils.ErrProductNotFound.Error())
 			return

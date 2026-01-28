@@ -451,7 +451,7 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "kasir-api-production-1c80.up.railway.app",
 	BasePath:         "/",
-	Schemes:          []string{"http", "https"},
+	Schemes:          []string{},
 	Title:            "Kasir API",
 	Description:      "",
 	InfoInstanceName: "swagger",

@@ -1,16 +1,17 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"kasir-api/internal/domain"
 )
 
 type ProductRepository interface {
-	GetProducts(page int, pageSize int) ([]domain.Product, int, error)
-	GetProductByID(id int) (*domain.Product, error)
-	CreateProduct(product *domain.Product) (*domain.Product, error)
-	UpdateProduct(id int, product *domain.Product) (*domain.Product, error)
-	DeleteProduct(id int) error
+	GetProducts(ctx context.Context, page int, pageSize int) ([]domain.Product, int, error)
+	GetProductByID(ctx context.Context, id int) (*domain.Product, error)
+	CreateProduct(ctx context.Context, product *domain.Product) (*domain.Product, error)
+	UpdateProduct(ctx context.Context, id int, product *domain.Product) (*domain.Product, error)
+	DeleteProduct(ctx context.Context, id int) error
 }
 
 type ProductRepositoryImpl struct {
@@ -21,14 +22,14 @@ func NewProductRepository(db *sql.DB) ProductRepository {
 	return &ProductRepositoryImpl{db: db}
 }
 
-func (p *ProductRepositoryImpl) GetProducts(page int, pageSize int) ([]domain.Product, int, error) {
+func (p *ProductRepositoryImpl) GetProducts(ctx context.Context, page int, pageSize int) ([]domain.Product, int, error) {
 	var total int
-	err := p.db.QueryRow("SELECT COUNT(*) FROM products").Scan(&total)
+	err := p.db.QueryRowContext(ctx, "SELECT COUNT(*) FROM products").Scan(&total)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	rows, err := p.db.Query("SELECT * FROM products LIMIT $1 OFFSET $2", pageSize, (page-1)*pageSize)
+	rows, err := p.db.QueryContext(ctx, "SELECT * FROM products LIMIT $1 OFFSET $2", pageSize, (page-1)*pageSize)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -45,9 +46,9 @@ func (p *ProductRepositoryImpl) GetProducts(page int, pageSize int) ([]domain.Pr
 	return products, total, nil
 }
 
-func (p *ProductRepositoryImpl) GetProductByID(id int) (*domain.Product, error) {
+func (p *ProductRepositoryImpl) GetProductByID(ctx context.Context, id int) (*domain.Product, error) {
 	var product domain.Product
-	err := p.db.QueryRow("SELECT * FROM products WHERE id = $1", id).Scan(&product.ID, &product.Name, &product.Price, &product.Stock)
+	err := p.db.QueryRowContext(ctx, "SELECT * FROM products WHERE id = $1", id).Scan(&product.ID, &product.Name, &product.Price, &product.Stock)
 
 	if err != nil {
 		return nil, err
@@ -56,14 +57,11 @@ func (p *ProductRepositoryImpl) GetProductByID(id int) (*domain.Product, error) 
 	return &product, nil
 }
 
-func (p *ProductRepositoryImpl) CreateProduct(product *domain.Product) (*domain.Product, error) {
-	query := `
-		INSERT INTO products (name, price, stock)
-		VALUES ($1, $2, $3)
-		RETURNING id
-	`
+func (p *ProductRepositoryImpl) CreateProduct(ctx context.Context, product *domain.Product) (*domain.Product, error) {
+	query := `INSERT INTO products (name, price, stock) VALUES ($1, $2, $3) RETURNING id`
 
-	err := p.db.QueryRow(
+	err := p.db.QueryRowContext(
+		ctx,
 		query,
 		product.Name,
 		product.Price,
@@ -77,13 +75,11 @@ func (p *ProductRepositoryImpl) CreateProduct(product *domain.Product) (*domain.
 	return product, nil
 }
 
-func (p *ProductRepositoryImpl) UpdateProduct(id int, product *domain.Product) (*domain.Product, error) {
-	query := `
-		UPDATE products SET name = $1, price = $2, stock = $3 WHERE id = $4
-		RETURNING id
-	`
+func (p *ProductRepositoryImpl) UpdateProduct(ctx context.Context, id int, product *domain.Product) (*domain.Product, error) {
+	query := `UPDATE products SET name = $1, price = $2, stock = $3 WHERE id = $4 RETURNING id`
 
-	err := p.db.QueryRow(
+	err := p.db.QueryRowContext(
+		ctx,
 		query,
 		product.Name,
 		product.Price,
@@ -98,9 +94,9 @@ func (p *ProductRepositoryImpl) UpdateProduct(id int, product *domain.Product) (
 	return product, nil
 }
 
-func (p *ProductRepositoryImpl) DeleteProduct(id int) error {
+func (p *ProductRepositoryImpl) DeleteProduct(ctx context.Context, id int) error {
 	query := "DELETE FROM products WHERE id = $1"
-	_, err := p.db.Exec(query, id)
+	_, err := p.db.ExecContext(ctx, query, id)
 	if err != nil {
 		return err
 	}

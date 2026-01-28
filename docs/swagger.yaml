@@ -293,7 +293,4 @@ paths:
       summary: Update product
       tags:
       - products
-schemes:
-- http
-- https
 swagger: "2.0"
