@@ -29,7 +29,23 @@ func (p *ProductRepositoryImpl) GetProducts(ctx context.Context, page int, pageS
 		return nil, 0, err
 	}
 
-	rows, err := p.db.QueryContext(ctx, "SELECT * FROM products LIMIT $1 OFFSET $2", pageSize, (page-1)*pageSize)
+	query := `
+		SELECT
+			products.id,
+			products.name,
+			products.price,
+			products.stock,
+			categories.id as category_id,
+			categories.name as category_name
+		FROM products
+		JOIN categories ON products.category_id = categories.id LIMIT $1 OFFSET $2`
+
+	rows, err := p.db.QueryContext(
+		ctx,
+		query,
+		pageSize,
+		(page-1)*pageSize,
+	)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -38,7 +54,14 @@ func (p *ProductRepositoryImpl) GetProducts(ctx context.Context, page int, pageS
 	var products []domain.Product
 	for rows.Next() {
 		var product domain.Product
-		if err := rows.Scan(&product.ID, &product.Name, &product.Price, &product.Stock, &product.CategoryID); err != nil {
+		if err := rows.Scan(
+			&product.ID,
+			&product.Name,
+			&product.Price,
+			&product.Stock,
+			&product.Category.ID,
+			&product.Category.Name,
+		); err != nil {
 			return nil, 0, err
 		}
 		products = append(products, product)
@@ -48,8 +71,27 @@ func (p *ProductRepositoryImpl) GetProducts(ctx context.Context, page int, pageS
 
 func (p *ProductRepositoryImpl) GetProductByID(ctx context.Context, id int) (*domain.Product, error) {
 	var product domain.Product
-	err := p.db.QueryRowContext(ctx, "SELECT * FROM products WHERE id = $1", id).Scan(&product.ID, &product.Name, &product.Price, &product.Stock)
 
+	query := `
+		SELECT 
+			products.id,
+			products.name,
+			products.price,
+			products.stock,
+			categories.id AS category_id,
+			categories.name AS category_name
+		FROM products
+		JOIN categories ON products.category_id = categories.id
+		WHERE products.id = $1`
+
+	err := p.db.QueryRowContext(ctx, query, id).Scan(
+		&product.ID,
+		&product.Name,
+		&product.Price,
+		&product.Stock,
+		&product.Category.ID,
+		&product.Category.Name,
+	)
 	if err != nil {
 		return nil, err
 	}

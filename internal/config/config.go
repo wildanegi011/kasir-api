@@ -36,15 +36,18 @@ func LoadConfig() *Config {
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	v.AutomaticEnv()
 
-	_ = v.BindEnv("app.name", "APP_NAME")
+	v.SetConfigFile(".env")
+	_ = v.ReadInConfig()
 
-	_ = v.BindEnv("database.url", "DATABASE_URL")
-	_ = v.BindEnv("database.max_open_conns", "DATABASE_MAX_OPEN_CONNS")
-	_ = v.BindEnv("database.max_idle_conns", "DATABASE_MAX_IDLE_CONNS")
+	v.SetDefault("app.name", v.GetString("APP_NAME"))
+	v.SetDefault("app.port", v.GetString("APP_PORT"))
+	v.SetDefault("database.url", v.GetString("DATABASE_URL"))
+	v.SetDefault("database.max_open_conns", v.GetInt("DATABASE_MAX_OPEN_CONNS"))
+	v.SetDefault("database.max_idle_conns", v.GetInt("DATABASE_MAX_IDLE_CONNS"))
 
 	var config Config
 	if err := v.Unmarshal(&config); err != nil {
-		log.Println("failed to unmarshal config", err)
+		log.Println("Failed to unmarshal config:", err)
 	}
 
 	return &config
@@ -53,6 +56,7 @@ func LoadConfig() *Config {
 func GetConfig() *Config {
 	once.Do(func() {
 		cfg = LoadConfig()
+		log.Println("loading config", &cfg.Database)
 	})
 	return cfg
 }

@@ -11,6 +11,7 @@ import (
 )
 
 func NewPostgres(config *config.DatabaseConfig) (*sql.DB, func() error, error) {
+	log.Println("connecting to database", config)
 	if config.URL == "" {
 		log.Println("database url is empty")
 		return nil, nil, utils.ErrEmptyDatabaseURL

@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -25,6 +26,8 @@ import (
 func main() {
 	// load config
 	cfg := config.GetConfig()
+
+	log.Println("connecting to database", cfg)
 
 	// connect to database
 	db, closeDB, err := database.NewPostgres(&cfg.Database)

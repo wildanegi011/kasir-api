@@ -41,7 +41,7 @@ func (h *ProductHandler) GetProducts(w http.ResponseWriter, r *http.Request) {
 
 	products, total, err := h.productService.GetProducts(r.Context(), page, pageSize)
 	if err != nil {
-		utils.ErrorResponse(w, http.StatusInternalServerError, "failed to get products")
+		utils.ErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 	utils.SuccessResponse(
